@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  alice:
+    build: ./alice
+    container_name: alice_sender
+    ports:
+      - "3000:3000"
+    networks:
+      kripto_net:
+        ipv4_address: 172.20.0.10  # IP statis Alice
+    environment:
+      - BOB_IP=172.20.0.20
+      - BOB_PORT=4000
+
+  bob:
+    build: ./bob
+    container_name: bob_receiver
+    ports:
+      - "4000:4000"
+    networks:
+      kripto_net:
+        ipv4_address: 172.20.0.20  # IP statis Bob
+    environment:
+      - ALICE_IP=172.20.0.10
+      - ALICE_PORT=3000
+
+networks:
+  kripto_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
